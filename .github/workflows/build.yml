@@ -2,9 +2,9 @@ name: Build test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "1.0" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "1.0" ]
 
 jobs:
   build:
