@@ -1,0 +1,35 @@
+name: Create release
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build shell module
+      run: ./gradlew shell:build
+    - name: Build dpt module
+      run: ./gradlew dpt:build
+    - name: Compress files
+      run:  zip -r -q executable.zip executable/
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.ACCESS_TOKEN }}"
+        prerelease: true
+        files: |
+          executable.zip
